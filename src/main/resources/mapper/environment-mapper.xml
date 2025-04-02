@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 해당 파일에 모든 쿼리문을 작성 -->
+<!-- namespace에는 xml파일과 연결할 Mapper interface 파일명을 패키지를 포함하여 적어주세요 -->
+<mapper namespace="com.green.farmseye.environment.mapper.EnvironmentMapper">
+
+    <resultMap id="env" type="EnvironmentDTO">
+        <result column="EYE_NUM" property="eyeNum"/>
+        <result column="TEMP" property="temp"/>
+        <result column="HUMI" property="humi"/>
+        <result column="NO2" property="no2"/>
+        <result column="CO2" property="co2"/>
+        <result column="AIR_QUALITY" property="airQuality"/>
+        <result column="ILLUMI" property="illumi"/>
+        <result column="TIMESTAMP" property="timestamp"/>
+    </resultMap>
+
+    <!--내부 시설 조회-->
+    <select id="selectEnv" resultMap="env">
+        SELECT EYE_NUM
+        , TEMP
+        , HUMI
+        , NO2
+        , CO2
+        , AIR_QUALITY
+        , ILLUMI
+        , TIMESTAMP
+        FROM farmseye_env
+    </select>
+
+    <!--내부 시설 등록-->
+    <insert id="insertEnv">
+        INSERT INTO farmseye_env
+        (
+        EYE_NUM
+        , TEMP
+        , HUMI
+        , NO2
+        , CO2
+        , AIR_QUALITY
+        , ILLUMI
+        ) VALUES(
+        #{eyeNum}
+        , #{temp}
+        , #{humi}
+        , #{no2}
+        , #{co2}
+        , #{airQuality}
+        , #{illumi}
+        )
+    </insert>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

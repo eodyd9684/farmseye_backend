@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 해당 파일에 모든 쿼리문을 작성 -->
+<!-- namespace에는 xml파일과 연결할 Mapper interface 파일명을 패키지를 포함하여 적어주세요 -->
+<mapper namespace="com.green.farmseye.user.mapper.UserMapper">
+
+    <resultMap id="user" type="UserDTO">
+        <id column="USER_ID" property="userId"/>
+        <result column="USER_PW" property="userPw"/>
+        <result column="USER_NAME" property="userName"/>
+        <result column="USER_AGE" property="userAge"/>
+        <result column="USER_TEL" property="userTel"/>
+        <result column="USER_ADDR" property="userAddr"/>
+        <result column="REG_DATE" property="regDate"/>
+        <result column="IS_USING" property="isUsing"/>
+        <result column="USER_ROLL" property="userRoll"/>
+        <collection property="imgList" resultMap="userImg"/>
+    </resultMap>
+
+    <resultMap id="userImg" type="UserImgDTO">
+        <id column="IMG_CODE" property="imgCode"/>
+        <result column="ORIGIN_FILE_NAME" property="originFileName"/>
+        <result column="ATTACHED_FILE_NAME" property="attachedFileName"/>
+        <result column="USER_ID" property="userId"/>
+    </resultMap>
+
+    <!--회원 정보 조회-->
+    <select id="selectUser" resultMap="user">
+        SELECT USER_ID
+        , USER_PW
+        , USER_NAME
+        , USER_AGE
+        , USER_TEL
+        , USER_ADDR
+        , REG_DATE
+        , IS_USING
+        , USER_ROLL
+        , ORIGIN_FILE_NAME
+        , ATTACHED_FILE_NAME
+        FROM famseye_user U INNER JOIN USER_IMG I
+        ON U.USER_ID = I.USER_ID
+    </select>
+
+    <!--회원 정보 등록-->
+    <insert id="insertUser">
+        INSERT INTO famseye_user
+        (
+        USER_ID
+        , USER_PW
+        , USER_NAME
+        , USER_AGE
+        , USER_TEL
+        , USER_ADDR
+        ) VALUES(
+        #{userId}
+        , #{userPw}
+        , #{userName}
+        , #{userAge}
+        , #{userTel}
+        , #{userAddr}
+        )
+    </insert>
+
+    <!--회원 정보 삭제-->
+    <delete id="deleteUser">
+        DELETE famseye_user
+        WHERE USER_ID = #{userId}
+    </delete>
+
+    <!--회원 정보 수정-->
+    <update id="updateUser">
+        UPDATE famseye_user
+        SET
+        USER_PW = #{userPw}
+        , USER_TEL = #{userTel}
+        , USER_ADDR = #{userAddr}
+        WHERE USER_ID = #{userId}
+    </update>
+
+    <!--회원 이미지 등록-->
+    <insert id="insertImgs">
+        INSERT INTO USER_IMG (
+        ORIGIN_FILE_NAME
+        , ATTACHED_FILE_NAME
+        , USER_ID
+        ) VALUES (
+        #{originFileName}
+        , #{attachedFileName}
+        , #{userId}
+        )
+    </insert>
+
+    <!--회원 이미지 수정-->
+    <update id="updateImgs">
+        UPDATE USER_IMG
+        SET
+        ORIGIN_FILE_NAME = #{originFuleName}
+        , ATTACHED_FILE_NAME = #{attachedFileName}
+        WHERE USER_ID = #{userId}
+    </update>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

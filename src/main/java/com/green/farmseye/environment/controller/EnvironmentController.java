@@ -1,6 +1,6 @@
-package com.green.farmseye.farmseye.controller;
+package com.green.farmseye.environment.controller;
 
-import com.green.farmseye.farmseye.service.FarmseyeService;
+import com.green.farmseye.environment.service.EnvironmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/farms")
 @RequiredArgsConstructor
-public class FarmseyeController {
-  private final FarmseyeService farmseyeService;
+public class EnvironmentController {
+  private final EnvironmentService environmentService;
 }
