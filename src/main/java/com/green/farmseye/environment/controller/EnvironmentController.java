@@ -9,5 +9,5 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/farms")
 @RequiredArgsConstructor
 public class EnvironmentController {
-  private final EnvironmentService farmseyeService;
+  private final EnvironmentService environmentService;
 }

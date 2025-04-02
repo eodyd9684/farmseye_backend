@@ -7,5 +7,5 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class EnvironmentServiceImpl implements EnvironmentService {
-  private final EnvironmentMapper farmseyeMapper;
+  private final EnvironmentMapper environmentMapper;
 }

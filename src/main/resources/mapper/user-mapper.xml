@@ -92,7 +92,7 @@
     </insert>
 
     <!--회원 이미지 수정-->
-    <update id="insertImgs">
+    <update id="updateImgs">
         UPDATE USER_IMG
         SET
         ORIGIN_FILE_NAME = #{originFuleName}

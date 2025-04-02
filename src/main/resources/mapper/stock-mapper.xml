@@ -12,7 +12,7 @@
     </resultMap>
 
     <!--개체 조회-->
-    <select id="" resultMap="stock">
+    <select id="selectStock" resultMap="stock">
         SELECT STOCK_NUM
         , FEED_WEIGHT
         , STOCK_WEIGHT
@@ -20,7 +20,7 @@
     </select>
 
     <!--개체 등록-->
-    <insert id="">
+    <insert id="insertStock">
         INSERT INTO farmseye_chi
         (
         STOCK_NUM
