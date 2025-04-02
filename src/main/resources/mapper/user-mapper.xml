@@ -38,13 +38,13 @@
         , USER_ROLL
         , ORIGIN_FILE_NAME
         , ATTACHED_FILE_NAME
-        FROM famseye_user U INNER JOIN USER_IMG I
+        FROM FARMSEYE_USER U INNER JOIN USER_IMG I
         ON U.USER_ID = I.USER_ID
     </select>
 
     <!--회원 정보 등록-->
     <insert id="insertUser">
-        INSERT INTO famseye_user
+        INSERT INTO FARMSEYE_USER
         (
         USER_ID
         , USER_PW
@@ -64,13 +64,13 @@
 
     <!--회원 정보 삭제-->
     <delete id="deleteUser">
-        DELETE famseye_user
+        DELETE FARMSEYE_USER
         WHERE USER_ID = #{userId}
     </delete>
 
     <!--회원 정보 수정-->
     <update id="updateUser">
-        UPDATE famseye_user
+        UPDATE FARMSEYE_USER
         SET
         USER_PW = #{userPw}
         , USER_TEL = #{userTel}
