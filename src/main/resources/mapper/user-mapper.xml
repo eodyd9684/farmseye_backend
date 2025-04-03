@@ -99,6 +99,7 @@
         , ATTACHED_FILE_NAME = #{attachedFileName}
         WHERE USER_ID = #{userId}
     </update>
+
 </mapper>
 
 

@@ -21,5 +21,5 @@ public class UserDTO {
   private String isUsing;
   private String userRoll;
 
-  private List<UserImgDTO> imgList;
+  private UserImgDTO imgList;
 }
