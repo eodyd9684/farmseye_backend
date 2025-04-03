@@ -30,4 +30,16 @@ public class UserServiceImpl implements UserService{
   public List<UserDTO> selectUser() {
     return userMapper.selectUser();
   }
+
+  //회원 삭제 기능
+  @Override
+  public void deleteUser(String userId) {
+  userMapper.deleteUser(userId);
+  }
+
+  //회원 수정 기능
+  @Override
+  public void updateUser(UserDTO userDTO) {
+  userMapper.updateUser(userDTO);
+  }
 }

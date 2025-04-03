@@ -15,4 +15,10 @@ public interface UserService {
 
   //회원 정보 조회 기능
   public List<UserDTO> selectUser();
+
+  //회원 정보 삭제 기능
+  public void deleteUser(String userId);
+
+  //회원 정보 수정 기능
+  public void updateUser(UserDTO userDTO);
 }

@@ -50,4 +50,16 @@ public class UserController {
             .status(HttpStatus.OK)
             .body("서버에서 오류발생");
   }
+
+  //회원 삭제 api
+  @DeleteMapping("/{userId}")
+  public void deleteUser(@PathVariable("userId") String userId){
+    userService.deleteUser(userId);
+  }
+
+  //회원 수정 api
+  @PostMapping("/{userId}")
+  public void updateUser(@RequestBody UserDTO userDTO, @PathVariable("userId") String userId){
+  userService.updateUser(userDTO);
+  }
 }

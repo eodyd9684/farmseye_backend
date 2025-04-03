@@ -17,4 +17,10 @@ public interface UserMapper {
 
   //회원 정보 조회 쿼리
   public List<UserDTO> selectUser();
+
+  //회원 정보 삭제 쿼리
+  public void deleteUser(String userId);
+
+  //회원 정보 수정 쿼리
+  public void updateUser(UserDTO userDTO);
 }
