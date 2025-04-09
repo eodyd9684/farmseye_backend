@@ -33,6 +33,7 @@
         , USER_NAME
         , USER_AGE
         , USER_TEL
+        , USER_EMAIL
         , USER_ADDR
         , REG_DATE
         , IS_USING
