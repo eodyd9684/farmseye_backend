@@ -11,6 +11,7 @@
         <result column="USER_NAME" property="userName"/>
         <result column="USER_AGE" property="userAge"/>
         <result column="USER_TEL" property="userTel"/>
+        <result column="USER_EMAIL" property="userEmail"/>
         <result column="USER_ADDR" property="userAddr"/>
         <result column="REG_DATE" property="regDate"/>
         <result column="IS_USING" property="isUsing"/>
@@ -32,25 +33,27 @@
         , USER_NAME
         , USER_AGE
         , USER_TEL
+        , USER_EMAIL
         , USER_ADDR
         , REG_DATE
         , IS_USING
         , USER_ROLL
         , ORIGIN_FILE_NAME
         , ATTACHED_FILE_NAME
-        FROM famseye_user U INNER JOIN USER_IMG I
+        FROM FARMSEYE_USER U INNER JOIN USER_IMG I
         ON U.USER_ID = I.USER_ID
     </select>
 
     <!--회원 정보 등록-->
     <insert id="insertUser">
-        INSERT INTO famseye_user
+        INSERT INTO FARMSEYE_USER
         (
         USER_ID
         , USER_PW
         , USER_NAME
         , USER_AGE
         , USER_TEL
+        , USER_EMAIL
         , USER_ADDR
         ) VALUES(
         #{userId}
@@ -58,19 +61,20 @@
         , #{userName}
         , #{userAge}
         , #{userTel}
+        , #{userEmail}
         , #{userAddr}
         )
     </insert>
 
     <!--회원 정보 삭제-->
     <delete id="deleteUser">
-        DELETE famseye_user
+        DELETE FARMSEYE_USER
         WHERE USER_ID = #{userId}
     </delete>
 
     <!--회원 정보 수정-->
     <update id="updateUser">
-        UPDATE famseye_user
+        UPDATE FARMSEYE_USER
         SET
         USER_PW = #{userPw}
         , USER_TEL = #{userTel}
@@ -95,10 +99,11 @@
     <update id="updateImgs">
         UPDATE USER_IMG
         SET
-        ORIGIN_FILE_NAME = #{originFuleName}
+        ORIGIN_FILE_NAME = #{originFileName}
         , ATTACHED_FILE_NAME = #{attachedFileName}
         WHERE USER_ID = #{userId}
     </update>
+
 </mapper>
 
 

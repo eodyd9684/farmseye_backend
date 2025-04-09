@@ -16,10 +16,11 @@ public class UserDTO {
   private String userName;
   private int userAge;
   private String userTel;
+  private String userEmail;
   private String userAddr;
   private LocalDateTime regDate;
   private String isUsing;
   private String userRoll;
 
-  private List<UserImgDTO> imgList;
+  private UserImgDTO imgList;
 }

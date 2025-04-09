@@ -11,5 +11,5 @@ public class UserImgDTO {
   private int imgCode;
   private String originFileName;
   private String attachedFileName;
-  private int userId;
+  private String userId;
 }
