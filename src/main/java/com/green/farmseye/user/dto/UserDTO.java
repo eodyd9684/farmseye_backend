@@ -20,7 +20,7 @@ public class UserDTO {
   private String userAddr;
   private LocalDateTime regDate;
   private String isUsing;
-  private String userRoll;
+  private String userRole;
 
   private UserImgDTO imgList;
 }

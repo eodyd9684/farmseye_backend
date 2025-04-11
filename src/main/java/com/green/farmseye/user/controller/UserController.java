@@ -5,19 +5,24 @@ import com.green.farmseye.user.dto.UserImgDTO;
 import com.green.farmseye.user.service.UserService;
 import com.green.farmseye.util.UploadUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/user")
 public class UserController {
   private final UserService userService;
   private final UploadUtil uploadUtil;
+  private final PasswordEncoder passwordEncoder;
 
   //회원 등록 api
   @PostMapping("")
@@ -28,7 +33,7 @@ public class UserController {
     String mainAttachedFileName = uploadUtil.fileUpload(mainImg); //첨부된파일명은 fileUpload() 메서드에서 만들어짐
 
     //USER 테이블에 데이터 INSERT
-    userService.insertUser(userDTO);
+    userService.join(userDTO);
 
     UserImgDTO userImg = new UserImgDTO();
     userImg.setOriginFileName(mainImg.getOriginalFilename());
@@ -62,4 +67,63 @@ public class UserController {
   public void updateUser(@RequestBody UserDTO userDTO, @PathVariable("userId") String userId){
   userService.updateUser(userDTO);
   }
+
+
+  //비밀번호 암호화 연습 메서드
+  @GetMapping("/test")
+  public void testEncode(){
+    String str1 = "java";
+    String str2 = "java";
+
+    //암호화
+    String encoded_Str1 =  passwordEncoder.encode(str1);
+    String encoded_Str2 =  passwordEncoder.encode(str2);
+
+    System.out.println("암호화 된 str1 = " + encoded_Str1);
+    System.out.println("암호화 된 str2 = " + encoded_Str2);
+
+    //matches(원본 문자열, 암호화된 문자열) -> true, false
+    boolean result1 = passwordEncoder.matches(str1, encoded_Str1);
+    boolean result2 = passwordEncoder.matches("python", encoded_Str1);
+    System.out.println("result1 = " + result1);
+    System.out.println("result2 = " + result2);
+  };
+
+  //회원가입
+  @PostMapping("/join")
+  public ResponseEntity<?> join(@RequestBody UserDTO userDTO){
+    log.info("회원가입 기능 실행");
+
+    //비밀번호 암호화
+    String encoded_pw = passwordEncoder.encode(userDTO.getUserPw());
+    userDTO.setUserPw(encoded_pw);
+
+    userService.join(userDTO);
+
+    return ResponseEntity.status(HttpStatus.OK).build();
+  }
+
+
+
+  @GetMapping("/test1")
+  public String test1(){
+    log.info("test1() 메서드 실행!");
+    return "test1";
+  }
+
+  @GetMapping("/test2")
+  public String test2(){
+    log.info("test2() 메서드 실행!!");
+    return "test2";
+  }
+
+  @GetMapping("/test3")
+  public String test3(){
+    log.info("test3() 메서드 실행!!!");
+    return "test3";
+  }
+
+
+
+
 }

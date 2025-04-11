@@ -13,9 +13,15 @@ import java.util.List;
 public class UserServiceImpl implements UserService{
   private final UserMapper userMapper;
 
+  //로그인 하려는 회원 정보 조회
+  @Override
+  public UserDTO getUserForLogin(String userId) {
+    return userMapper.getUserForLogin(userId);
+  }
+
   //회원 등록 기능
   @Override
-  public void insertUser(UserDTO userDTO) {
+  public void join(UserDTO userDTO) {
 
   }
 

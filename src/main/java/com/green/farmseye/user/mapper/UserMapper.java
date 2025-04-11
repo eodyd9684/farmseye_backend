@@ -8,9 +8,11 @@ import java.util.List;
 
 @Mapper
 public interface UserMapper {
+  //로그인 하려는 회원 정보 조회
+  public UserDTO getUserForLogin(String userId);
 
   //회원 등록 쿼리
-  public void insertUser(UserDTO userDTO);
+  public void join(UserDTO userDTO);
 
   //회원 이미지 등록 쿼리
   public void insertImgs(UserImgDTO userImgDTO);
@@ -23,4 +25,6 @@ public interface UserMapper {
 
   //회원 정보 수정 쿼리
   public void updateUser(UserDTO userDTO);
+
+
 }
