@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService{
   //회원 등록 기능
   @Override
   public void join(UserDTO userDTO) {
-
+    userMapper.join(userDTO);
   }
 
   //회원 이미지 등록 기능

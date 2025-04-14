@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -53,7 +54,7 @@ public class UserController {
     List<UserDTO> userList = userService.selectUser();
     return ResponseEntity
             .status(HttpStatus.OK)
-            .body("서버에서 오류발생");
+            .body(userList);
   }
 
   //회원 삭제 api
@@ -125,6 +126,20 @@ public class UserController {
   public String test3(){
     log.info("test3() 메서드 실행!!!");
     return "test3";
+  }
+
+  @PreAuthorize("isAuthenticated()")
+  @GetMapping("/test4")
+  public String test4(){
+    log.info("test4() 메서드 실행!!!");
+    return "test4";
+  }
+
+  @PreAuthorize("hasRole('ADMIN')")
+  @GetMapping("/test5")
+  public String test5(){
+    log.info("test5() 메서드 실행!!!");
+    return "test5";
   }
 
 

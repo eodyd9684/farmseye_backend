@@ -48,21 +48,21 @@
     <insert id="insertUser">
         INSERT INTO FARMSEYE_USER
         (
-        USER_ID
-        , USER_PW
-        , USER_NAME
-        , USER_AGE
-        , USER_TEL
-        , USER_EMAIL
-        , USER_ADDR
+            USER_ID
+            , USER_PW
+            , USER_NAME
+            , USER_AGE
+            , USER_TEL
+            , USER_EMAIL
+            , USER_ADDR
         ) VALUES(
-        #{userId}
-        , #{userPw}
-        , #{userName}
-        , #{userAge}
-        , #{userTel}
-        , #{userEmail}
-        , #{userAddr}
+            #{userId}
+            , #{userPw}
+            , #{userName}
+            , #{userAge}
+            , #{userTel}
+            , #{userEmail}
+            , #{userAddr}
         )
     </insert>
 
@@ -125,7 +125,7 @@
             , USER_ADDR
             , USER_ROLE
         ) VALUES (
-            '#{userId}
+            #{userId}
             , #{userPw}
             , #{userName}
             , #{userTel}

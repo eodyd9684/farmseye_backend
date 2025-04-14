@@ -17,6 +17,7 @@ public class JwtUtil {
 
   //application.properties 파일에 문자열로 정의된 시크릿키를 진짜 시크릿키로 변환
   public JwtUtil(@Value("${spring.jwt.secret}") String secret){
+
     secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS512.key().build().getAlgorithm());
   }
 
