@@ -74,6 +74,9 @@ public class UserController {
   public void testEncode(){
     String str1 = "java";
     String str2 = "java";
+    String pw = "asdf1234";
+    String encodedPw = passwordEncoder.encode(pw);
+    passwordEncoder.matches("asdf1234", encodedPw);
 
     //암호화
     String encoded_Str1 =  passwordEncoder.encode(str1);
@@ -81,6 +84,7 @@ public class UserController {
 
     System.out.println("암호화 된 str1 = " + encoded_Str1);
     System.out.println("암호화 된 str2 = " + encoded_Str2);
+    System.out.println("암호화 된 pw = " + encodedPw);
 
     //matches(원본 문자열, 암호화된 문자열) -> true, false
     boolean result1 = passwordEncoder.matches(str1, encoded_Str1);

@@ -8,22 +8,28 @@ import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.util.StreamUtils;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+import java.util.Iterator;
 
 @Slf4j
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
   private final AuthenticationManager authenticationManager;
+  private final JwtUtil jwtUtil;
 
-  public LoginFilter(AuthenticationManager authenticationManager){
+  public LoginFilter(AuthenticationManager authenticationManager, JwtUtil jwtUtil){
     this.authenticationManager = authenticationManager;
+    this.jwtUtil = jwtUtil;
 
     setFilterProcessesUrl("/user/login");  //로그인 요청 url 변경
     setUsernameParameter("userId");   //변경하지 않으면 아이디는 username으로 전달
@@ -70,13 +76,32 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
   @Override
   protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
     log.info("로그인 검증 성공");
-    super.successfulAuthentication(request, response, chain, authResult);
+
+    //토큰 생성을 위한 아이디 정보 추출
+    String username = authResult.getName();
+
+    //토큰 생성을 위한 권한 정보 추출
+    Collection<? extends GrantedAuthority> authorities = authResult.getAuthorities();
+    Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
+    GrantedAuthority auth = iterator.next();
+    String role = auth.getAuthority();
+
+    //토큰 생성
+    String accessToken = jwtUtil.createJwt(username, role, (1000 * 60 * 30)); //1000 = 1초, 30분
+
+    //생성한 토큰을 응답 헤더에 담아 클라이언트에 전달
+    response.setHeader("Access-Control-Expose-Headers", "Authorization");
+    response.setHeader("Authorization", "Bearer " + accessToken);
+    response.setStatus(HttpStatus.OK.value()); //클라이언트에 200 응답
+    
   }
 
   //인증 실패시 자동 실행되는 메서드
   @Override
   protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
     log.info("로그인 검증 실패");
-    super.unsuccessfulAuthentication(request, response, failed);
+
+    //로그인을 실패하는 401 상태코드 반환
+    response.setStatus(401);
   }
 }

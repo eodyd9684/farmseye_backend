@@ -1,5 +1,6 @@
 package com.green.farmseye.user.config;
 
+import com.green.farmseye.user.jwt.JwtUtil;
 import com.green.farmseye.user.jwt.LoginFilter;
 import jakarta.security.auth.message.config.AuthConfig;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableMethodSecurity(prePostEnabled = true, securedEnabled = true)
 @RequiredArgsConstructor
 public class SecurityConfig {
+  private final JwtUtil jwtUtil;
 
   //실제 security의 인증 & 인가에 대한 설정 코드를 작성하는 메서드
   @Bean
@@ -50,7 +52,7 @@ public class SecurityConfig {
             );
 
     //원래 로그인 요청을 받는 UsernamePasswordAuthenticationFilter 대신 커스터마이징한 LoginFilter를 사용하도록 필터 교체
-    http.addFilterAt(new LoginFilter(authenticationManager), UsernamePasswordAuthenticationFilter.class);
+    http.addFilterAt(new LoginFilter(authenticationManager, jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
     return http.build();
   }
