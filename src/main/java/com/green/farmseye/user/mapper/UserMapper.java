@@ -26,5 +26,8 @@ public interface UserMapper {
   //회원 정보 수정 쿼리
   public void updateUser(UserDTO userDTO);
 
+  //이미지 조회 쿼리
+  public void insertImgs(UserDTO userDTO);
+
 
 }

@@ -28,20 +28,20 @@
 
     <!--회원 정보 조회-->
     <select id="selectUser" resultMap="user">
-        SELECT USER_ID
-        , USER_PW
-        , USER_NAME
-        , USER_AGE
-        , USER_TEL
-        , USER_EMAIL
-        , USER_ADDR
-        , REG_DATE
-        , IS_USING
-        , USER_ROLE
-        , ORIGIN_FILE_NAME
-        , ATTACHED_FILE_NAME
-        FROM FARMSEYE_USER U INNER JOIN USER_IMG I
-        ON U.USER_ID = I.USER_ID
+        SELECT U.USER_ID
+        , U.USER_PW
+        , U.USER_NAME
+        , U.USER_AGE
+        , U.USER_TEL
+        , U.USER_EMAIL
+        , U.USER_ADDR
+        , U.REG_DATE
+        , U.IS_USING
+        , U.USER_ROLE
+        , I.ORIGIN_FILE_NAME
+        , I.ATTACHED_FILE_NAME
+        , FROM FARMSEYE_USER U
+        LEFT JOIN USER_IMG I ON U.USER_ID = I.USER_ID
     </select>
 
     <!--회원 정보 등록-->
@@ -89,9 +89,12 @@
         , ATTACHED_FILE_NAME
         , USER_ID
         ) VALUES (
-        #{originFileName}
-        , #{attachedFileName}
-        , #{userId}
+        <foreach collection="imgList" item="img" separator=",">
+            #{imgCode}
+            , #{originFileName}
+            , #{attachedFileName}
+            , #{userId}
+        </foreach>
         )
     </insert>
 
@@ -125,7 +128,7 @@
             , USER_ADDR
             , USER_ROLE
         ) VALUES (
-            '#{userId}
+            #{userId}
             , #{userPw}
             , #{userName}
             , #{userTel}

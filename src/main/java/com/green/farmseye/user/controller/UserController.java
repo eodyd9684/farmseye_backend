@@ -53,7 +53,7 @@ public class UserController {
     List<UserDTO> userList = userService.selectUser();
     return ResponseEntity
             .status(HttpStatus.OK)
-            .body("서버에서 오류발생");
+            .body(userList);
   }
 
   //회원 삭제 api
@@ -63,7 +63,7 @@ public class UserController {
   }
 
   //회원 수정 api
-  @PostMapping("/{userId}")
+  @PutMapping("/{userId}")
   public void updateUser(@RequestBody UserDTO userDTO, @PathVariable("userId") String userId){
   userService.updateUser(userDTO);
   }
