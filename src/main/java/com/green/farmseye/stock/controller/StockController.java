@@ -1,13 +1,34 @@
 package com.green.farmseye.stock.controller;
 
+import com.green.farmseye.stock.dto.StockDTO;
 import com.green.farmseye.stock.service.StockService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
-@RequestMapping("")
+@RequestMapping("/stock")
 @RequiredArgsConstructor
 public class StockController {
   private final StockService stockService;
+
+  //개체 조회
+  @GetMapping("")
+  public List<StockDTO> selectStock(){
+    return stockService.selectStock();
+  }
+
+  //개체 등록
+  @PostMapping("/post")
+  public void insertStock(@RequestBody StockDTO stockDTO){
+    stockService.insertStock(stockDTO);
+  }
+
+  //개체 수정
+  @PutMapping("/{stockNum}")
+  public void updateStock(@RequestBody StockDTO stockDTO, @PathVariable("stockNum") int stockNum){
+    stockService.updateStock(stockDTO);
+  }
+
 }
