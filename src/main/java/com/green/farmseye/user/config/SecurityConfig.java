@@ -1,5 +1,6 @@
 package com.green.farmseye.user.config;
 
+import com.green.farmseye.user.jwt.JwtConfirmFilter;
 import com.green.farmseye.user.jwt.JwtUtil;
 import com.green.farmseye.user.jwt.LoginFilter;
 import jakarta.security.auth.message.config.AuthConfig;
@@ -23,7 +24,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration //객체생성 + 해당 클래스에 설정 내용이 들어있음을 알려줌
 @EnableWebSecurity //해당 클래스가 security 설정을 컨트롤 할 수 있도록 세팅하는 어노테이션
-@EnableMethodSecurity(prePostEnabled = true, securedEnabled = true)
+@EnableMethodSecurity(prePostEnabled = true, securedEnabled = true) //스프링 시큐리티에서 메서드 단위로 접근 제어(인가)를 적용할 수 있도록 활성화하는 어노테이션
 @RequiredArgsConstructor
 public class SecurityConfig {
   private final JwtUtil jwtUtil;
@@ -51,6 +52,10 @@ public class SecurityConfig {
 
             );
 
+    //모든 요청에서 토큰을 검증하는 JwtConfirmFilter 클래스를 SecurityFilterChain에 추가
+    //JwtConfirmFilter 클래스는 LoginFilter가 진행되기 전에 실행되도록 설정
+    http.addFilterBefore(new JwtConfirmFilter(jwtUtil), LoginFilter.class);
+
     //원래 로그인 요청을 받는 UsernamePasswordAuthenticationFilter 대신 커스터마이징한 LoginFilter를 사용하도록 필터 교체
     http.addFilterAt(new LoginFilter(authenticationManager, jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
@@ -75,7 +80,5 @@ public class SecurityConfig {
   public PasswordEncoder getPasswordEncoder(){
     return new BCryptPasswordEncoder();
   }
-
-
 
 }
