@@ -64,7 +64,7 @@ public class UserController {
   }
 
   //회원 수정 api
-  @PostMapping("/{userId}")
+  @PutMapping("/{userId}")
   public void updateUser(@RequestBody UserDTO userDTO, @PathVariable("userId") String userId){
   userService.updateUser(userDTO);
   }

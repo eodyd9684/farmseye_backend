@@ -48,4 +48,9 @@ public class UserServiceImpl implements UserService{
   public void updateUser(UserDTO userDTO) {
   userMapper.updateUser(userDTO);
   }
+
+  @Override
+  public void insertImgs(UserDTO userDTO) {
+    userMapper.insertImgs(userDTO);
+  }
 }

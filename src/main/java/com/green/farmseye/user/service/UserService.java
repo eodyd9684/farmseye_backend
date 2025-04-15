@@ -23,4 +23,7 @@ public interface UserService {
 
   //회원 정보 수정 기능
   public void updateUser(UserDTO userDTO);
+
+  //이미지 조회
+  public void insertImgs(UserDTO userDTO);
 }
