@@ -40,7 +40,7 @@
         , U.USER_ROLE
         , I.ORIGIN_FILE_NAME
         , I.ATTACHED_FILE_NAME
-        , FROM FARMSEYE_USER U
+        FROM FARMSEYE_USER U
         LEFT JOIN USER_IMG I ON U.USER_ID = I.USER_ID
     </select>
 
