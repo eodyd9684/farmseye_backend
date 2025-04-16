@@ -50,6 +50,7 @@ public class UserServiceImpl implements UserService{
   userMapper.updateUser(userDTO);
   }
 
+
   //회원 등록 시 중복 확인 기능
   @Override
   public List<UserDTO> duplicateCheckUser() {
@@ -61,6 +62,7 @@ public class UserServiceImpl implements UserService{
   public List<UserDTO> isUsable(String userId) {
     return userMapper.isUsable(userId);
   }
+
 
 
 }
