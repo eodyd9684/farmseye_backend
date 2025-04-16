@@ -26,4 +26,9 @@ public class StockServiceImpl implements StockService {
   public void updateStock(StockDTO stockDTO) {
     stockMapper.updateStock(stockDTO);
   }
+
+  @Override
+  public void deleteStock(int stockNum) {
+    stockMapper.deleteStock(stockNum);
+  }
 }

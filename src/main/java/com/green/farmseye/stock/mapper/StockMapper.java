@@ -15,4 +15,7 @@ public interface StockMapper {
 
   //개체 수정
   public void updateStock(StockDTO stockDTO);
+
+  //개체 삭제
+  public void deleteStock(int stockNum);
 }

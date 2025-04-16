@@ -20,15 +20,21 @@ public class StockController {
   }
 
   //개체 등록
-  @PostMapping("/post")
+  @PostMapping("/join")
   public void insertStock(@RequestBody StockDTO stockDTO){
+    stockDTO.setIndividualNum(stockDTO.getWarehousing());
     stockService.insertStock(stockDTO);
   }
 
   //개체 수정
   @PutMapping("/{stockNum}")
   public void updateStock(@RequestBody StockDTO stockDTO, @PathVariable("stockNum") int stockNum){
+    stockDTO.setIndividualNum(stockDTO.getWarehousing() - stockDTO.getShipment() - stockDTO.getDeathStock());
     stockService.updateStock(stockDTO);
   }
 
+  @DeleteMapping("/{stockNum}")
+  public void deleteStock(@PathVariable("stockNum") int stockNum){
+    stockService.deleteStock(stockNum);
+  }
 }

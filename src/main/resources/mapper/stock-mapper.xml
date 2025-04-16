@@ -61,6 +61,11 @@
         , DEATH_STOCK = #{deathStock}
         WHERE STOCK_NUM = #{stockNum}
     </update>
+
+    <delete id="deleteStock">
+        DELETE FROM FARMSEYE_CHI
+        WHERE STOCK_NUM = #{stockNum}
+    </delete>
 </mapper>
 
 
