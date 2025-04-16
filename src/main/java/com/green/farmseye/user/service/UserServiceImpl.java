@@ -14,6 +14,7 @@ public class UserServiceImpl implements UserService{
   private final UserMapper userMapper;
 
   //로그인 하려는 회원 정보 조회
+
   @Override
   public UserDTO getUserForLogin(String userId) {
     return userMapper.getUserForLogin(userId);
@@ -48,4 +49,18 @@ public class UserServiceImpl implements UserService{
   public void updateUser(UserDTO userDTO) {
   userMapper.updateUser(userDTO);
   }
+
+  //회원 등록 시 중복 확인 기능
+  @Override
+  public List<UserDTO> duplicateCheckUser() {
+    return userMapper.duplicateCheckUser();
+  }
+
+  //회원 정보 수정 시 중복 확인
+  @Override
+  public List<UserDTO> isUsable(String userId) {
+    return userMapper.isUsable(userId);
+  }
+
+
 }

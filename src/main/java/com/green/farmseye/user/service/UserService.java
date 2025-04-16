@@ -23,4 +23,10 @@ public interface UserService {
 
   //회원 정보 수정 기능
   public void updateUser(UserDTO userDTO);
+
+  //회원 등록 시 중복 확인 기능
+  public List<UserDTO> duplicateCheckUser();
+
+  //회원 정보 수정 시 중복 확인 쿼리
+  public List<UserDTO> isUsable(String userId);
 }

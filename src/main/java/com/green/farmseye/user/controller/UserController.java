@@ -7,6 +7,7 @@ import com.green.farmseye.util.UploadUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.User;
+import org.apache.catalina.security.SecurityUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,7 +20,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
   private final UserService userService;
   private final UploadUtil uploadUtil;
@@ -34,7 +35,7 @@ public class UserController {
     String mainAttachedFileName = uploadUtil.fileUpload(mainImg); //첨부된파일명은 fileUpload() 메서드에서 만들어짐
 
     //USER 테이블에 데이터 INSERT
-    userService.join(userDTO);
+     userService.join(userDTO);
 
     UserImgDTO userImg = new UserImgDTO();
     userImg.setOriginFileName(mainImg.getOriginalFilename());
@@ -64,9 +65,27 @@ public class UserController {
   }
 
   //회원 수정 api
-  @PostMapping("/{userId}")
+  @PutMapping("/{userId}")
   public void updateUser(@RequestBody UserDTO userDTO, @PathVariable("userId") String userId){
   userService.updateUser(userDTO);
+  }
+
+  //회원 등록 시 중복 확인
+  @GetMapping("/check")
+  public ResponseEntity<?> duplicateCheckUser(){
+    List<UserDTO> userList = userService.duplicateCheckUser();
+    return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(userList);
+  }
+
+  //회원 정보 수정 시 중복 확인
+  @GetMapping("/{userId}")
+  public ResponseEntity<?> isUsable(@PathVariable("userId") String userId){
+    List<UserDTO> userList = userService.isUsable(userId);
+    return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(userList);
   }
 
 
@@ -105,42 +124,11 @@ public class UserController {
 
     userService.join(userDTO);
 
-    return ResponseEntity.status(HttpStatus.OK).build();
+    return ResponseEntity.status(HttpStatus.OK).body(userDTO);
   }
 
 
 
-  @GetMapping("/test1")
-  public String test1(){
-    log.info("test1() 메서드 실행!");
-    return "test1";
-  }
-
-  @GetMapping("/test2")
-  public String test2(){
-    log.info("test2() 메서드 실행!!");
-    return "test2";
-  }
-
-  @GetMapping("/test3")
-  public String test3(){
-    log.info("test3() 메서드 실행!!!");
-    return "test3";
-  }
-
-  @PreAuthorize("isAuthenticated()")
-  @GetMapping("/test4")
-  public String test4(){
-    log.info("test4() 메서드 실행!!!");
-    return "test4";
-  }
-
-  @PreAuthorize("hasRole('ADMIN')")
-  @GetMapping("/test5")
-  public String test5(){
-    log.info("test5() 메서드 실행!!!");
-    return "test5";
-  }
 
 
 
