@@ -26,8 +26,11 @@ public interface UserMapper {
   //회원 정보 수정 쿼리
   public void updateUser(UserDTO userDTO);
 
-  //이미지 조회 쿼리
-  public void insertImgs(UserDTO userDTO);
+  //회원 등록 시 중복 확인 기능
+  public List<UserDTO> duplicateCheckUser();
+
+  //회원 정보 수정 시 중복 확인 쿼리
+  public List<UserDTO> isUsable(String userId);
 
 
 }
