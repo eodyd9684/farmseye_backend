@@ -44,14 +44,13 @@
         LEFT JOIN USER_IMG I ON U.USER_ID = I.USER_ID
     </select>
 
-    <!--회원 정보 등록-->
-    <insert id="insertUser">
+    <!--회원 가입-->
+    <insert id="join">
         INSERT INTO FARMSEYE_USER
         (
             USER_ID
             , USER_PW
             , USER_NAME
-            , USER_AGE
             , USER_TEL
             , USER_EMAIL
             , USER_ADDR
@@ -59,7 +58,6 @@
             #{userId}
             , #{userPw}
             , #{userName}
-            , #{userAge}
             , #{userTel}
             , #{userEmail}
             , #{userAddr}
@@ -78,6 +76,7 @@
         SET
         USER_PW = #{userPw}
         , USER_TEL = #{userTel}
+        , USER_EMAIL = #{userEmail}
         , USER_ADDR = #{userAddr}
         WHERE USER_ID = #{userId}
     </update>
@@ -117,26 +116,27 @@
         WHERE USER_ID = #{userId}
     </select>
 
-    <!--회원 가입-->
-    <insert id="join">
-        INSERT INTO FARMSEYE_USER (
-            USER_ID
+    <!--회원 정보 수정 시 중복 확인-->
+    <select id="isUsable" resultMap="user">
+        SELECT USER_ID
             , USER_PW
-            , USER_NAME
             , USER_TEL
             , USER_EMAIL
             , USER_ADDR
-            , USER_ROLE
-        ) VALUES (
-            #{userId}
-            , #{userPw}
-            , #{userName}
-            , #{userTel}
-            , #{userEmail}
-            , #{userAddr}
-            , #{userRole}
-        )
-    </insert>
+        FROM FARMSEYE_USER
+        WHERE USER_ID = #{userId}
+    </select>
+
+    <!--회원 등록 시 중복 조회-->
+    <select id="duplicateCheckUser" resultMap="user">
+        SELECT USER_ID
+            , USER_TEL
+            , USER_EMAIL
+            , USER_ADDR
+        FROM FARMSEYE_USER
+    </select>
+
+
 
 </mapper>
 
