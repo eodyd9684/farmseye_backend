@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService{
 
   //회원 정보 수정 시 중복 확인
   @Override
-  public List<UserDTO> isUsable(String userId) {
+  public UserDTO isUsable(String userId) {
     return userMapper.isUsable(userId);
   }
 

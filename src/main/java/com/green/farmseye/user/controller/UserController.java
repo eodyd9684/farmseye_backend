@@ -1,5 +1,6 @@
 package com.green.farmseye.user.controller;
 
+import com.green.farmseye.user.dto.CustomUserDetails;
 import com.green.farmseye.user.dto.UserDTO;
 import com.green.farmseye.user.dto.UserImgDTO;
 import com.green.farmseye.user.service.UserService;
@@ -11,6 +12,7 @@ import org.apache.catalina.security.SecurityUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -65,9 +67,17 @@ public class UserController {
   }
 
   //회원 수정 api
-  @PutMapping("/{userId}")
-  public void updateUser(@RequestBody UserDTO userDTO, @PathVariable("userId") String userId){
-  userService.updateUser(userDTO);
+  @PreAuthorize("isAuthenticated()")
+  @PutMapping("")
+  public void updateUser(@RequestBody UserDTO userDTO){
+    //userDTO.setUserId(userId); //url에서 받은 userId를 강제 주입 (보안상 안전을 위해)
+
+    //비밀번호 변경 했을 경우에만 비번 암호화를 진행
+    if(!userDTO.getUserPw().equals("")){
+      String encodedPw = passwordEncoder.encode(userDTO.getUserPw());
+      userDTO.setUserPw(encodedPw);
+    }
+    userService.updateUser(userDTO);
   }
 
   //회원 등록 시 중복 확인
@@ -80,12 +90,14 @@ public class UserController {
   }
 
   //회원 정보 수정 시 중복 확인
-  @GetMapping("/{userId}")
-  public ResponseEntity<?> isUsable(@PathVariable("userId") String userId){
-    List<UserDTO> userList = userService.isUsable(userId);
+  @PreAuthorize("isAuthenticated()")
+  @GetMapping("/isUsable")
+  public ResponseEntity<?> isUsable(@AuthenticationPrincipal CustomUserDetails customUserDetails){
+    String userId = customUserDetails.getUsername();
+    UserDTO userDTO = userService.isUsable(userId);
     return ResponseEntity
             .status(HttpStatus.OK)
-            .body(userList);
+            .body(userDTO);
   }
 
 

@@ -30,7 +30,7 @@ public interface UserMapper {
   public List<UserDTO> duplicateCheckUser();
 
   //회원 정보 수정 시 중복 확인 쿼리
-  public List<UserDTO> isUsable(String userId);
+  public UserDTO isUsable(String userId);
 
 
 }
