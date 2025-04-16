@@ -14,9 +14,9 @@ public class StockController {
   private final StockService stockService;
 
   //개체 조회
-  @GetMapping("")
-  public List<StockDTO> selectStock(){
-    return stockService.selectStock();
+  @GetMapping("/{userId}")
+  public List<StockDTO> selectStock(@PathVariable("userId") String userId){
+    return stockService.selectStock(userId);
   }
 
   //개체 등록

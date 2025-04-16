@@ -8,7 +8,7 @@ import java.util.List;
 @Mapper
 public interface StockMapper {
   //개체 조회
-  public List<StockDTO> selectStock();
+  public List<StockDTO> selectStock(String userId);
 
   //개체 등록
   public void insertStock(StockDTO stockDTO);

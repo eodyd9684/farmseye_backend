@@ -27,6 +27,7 @@
         , USER_ID
         , REG_DATE
         FROM farmseye_chi
+        WHERE USER_ID = #{userId}
     </select>
 
     <!--개체 등록-->

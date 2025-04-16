@@ -13,8 +13,8 @@ public class StockServiceImpl implements StockService {
   private final StockMapper stockMapper;
 
   @Override
-  public List<StockDTO> selectStock() {
-    return stockMapper.selectStock();
+  public List<StockDTO> selectStock(String userId) {
+    return stockMapper.selectStock(userId);
   }
 
   @Override
