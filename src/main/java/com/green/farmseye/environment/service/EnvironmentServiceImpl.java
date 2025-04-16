@@ -13,7 +13,7 @@ public class EnvironmentServiceImpl implements EnvironmentService {
   private final EnvironmentMapper environmentMapper;
 
   @Override
-  public List<EnvironmentDTO> selectEnv() {
-    return environmentMapper.selectEnv();
+  public List<EnvironmentDTO> selectEnv(String userId) {
+    return environmentMapper.selectEnv(userId);
   }
 }

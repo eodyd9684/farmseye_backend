@@ -34,6 +34,7 @@
             , TIMESTAMP
             , USER_ID
         FROM farmseye_env
+        WHERE USER_ID = #{userId}
     </select>
 
 

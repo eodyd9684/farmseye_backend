@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface EnvironmentService {
   //farmseye_env 테이블 목록 조회 기능
-  public List<EnvironmentDTO> selectEnv();
+  public List<EnvironmentDTO> selectEnv(String userId);
 
 }
