@@ -32,5 +32,8 @@ public interface UserMapper {
   //회원 정보 수정 시 중복 확인 쿼리
   public UserDTO isUsable(String userId);
 
+  //회원 탈퇴 쿼리
+  public int deactivateUser(String userId);
+
 
 }

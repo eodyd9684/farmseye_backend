@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -139,6 +140,20 @@ public class UserController {
     return ResponseEntity.status(HttpStatus.OK).body(userDTO);
   }
 
+  //회원 탈퇴 기능
+  @DeleteMapping("/deactivate")
+  public ResponseEntity<String> deactivateUser(@AuthenticationPrincipal UserDetails userDetails){
+    String userId = userDetails.getUsername(); //jwt 기반 인증 사용자 ID
+
+    boolean result = userService.deactivateUser(userId, userId);
+
+    if (result) {
+      return ResponseEntity.ok("회원 탈퇴 완료");
+    } else {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이미 탈퇴된 계정이거나 존재하지 않습니다.");
+    }
+
+  }
 
 
 
