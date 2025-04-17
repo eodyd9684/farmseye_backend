@@ -2,7 +2,9 @@ package com.green.farmseye.stock.controller;
 
 import com.green.farmseye.stock.dto.StockDTO;
 import com.green.farmseye.stock.service.StockService;
+import com.green.farmseye.user.dto.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,8 +16,9 @@ public class StockController {
   private final StockService stockService;
 
   //개체 조회
-  @GetMapping("/{userId}")
-  public List<StockDTO> selectStock(@PathVariable("userId") String userId){
+  @GetMapping("")
+  public List<StockDTO> selectStock(@AuthenticationPrincipal CustomUserDetails customUserDetails){
+    String userId = customUserDetails.getUsername();
     return stockService.selectStock(userId);
   }
 

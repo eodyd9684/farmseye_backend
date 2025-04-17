@@ -17,7 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/farms")
 public class EnvironmentController {
-  private EnvironmentService environmentService;
+  private final EnvironmentService environmentService;
 
   @Autowired
   public EnvironmentController(EnvironmentService environmentService){
