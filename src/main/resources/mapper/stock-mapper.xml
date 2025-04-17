@@ -7,16 +7,27 @@
 
     <resultMap id="stock" type="StockDTO">
         <result column="STOCK_NUM" property="stockNum"/>
-        <result column="FEED_WEIGHT" property="feedWeight"/>
+        <result column="INDIVIDUAL_NUM" property="individualNum"/>
+        <result column="WAREHOUSING" property="warehousing"/>
+        <result column="SHIPMENT" property="shipment"/>
         <result column="STOCK_WEIGHT" property="stockWeight"/>
+        <result column="DEATH_STOCK" property="deathStock"/>
+        <result column="REG_DATE" property="regDate"/>
+        <result column="USER_ID" property="userId"/>
     </resultMap>
 
     <!--개체 조회-->
     <select id="selectStock" resultMap="stock">
         SELECT STOCK_NUM
-        , FEED_WEIGHT
+        , INDIVIDUAL_NUM
+        , WAREHOUSING
+        , SHIPMENT
         , STOCK_WEIGHT
+        , DEATH_STOCK
+        , USER_ID
+        , REG_DATE
         FROM farmseye_chi
+        WHERE USER_ID = #{userId}
     </select>
 
     <!--개체 등록-->
@@ -24,14 +35,38 @@
         INSERT INTO farmseye_chi
         (
         STOCK_NUM
-        , FEED_WEIGHT
+        , INDIVIDUAL_NUM
+        , WAREHOUSING
+        , SHIPMENT
         , STOCK_WEIGHT
+        , DEATH_STOCK
+        , USER_ID
         ) VALUES (
         #{stockNum}
-        , #{feedWeight}
+        , #{individualNum}
+        , #{warehousing}
+        , #{shipment}
         , #{stockWeight}
+        , #{deathStock}
+        , #{userId}
         )
     </insert>
+
+    <update id="updateStock">
+        UPDATE FARMSEYE_CHI
+        SET
+        INDIVIDUAL_NUM = #{individualNum}
+        , WAREHOUSING = #{warehousing}
+        , SHIPMENT = #{shipment}
+        , STOCK_WEIGHT = #{stockWeight}
+        , DEATH_STOCK = #{deathStock}
+        WHERE STOCK_NUM = #{stockNum}
+    </update>
+
+    <delete id="deleteStock">
+        DELETE FROM FARMSEYE_CHI
+        WHERE STOCK_NUM = #{stockNum}
+    </delete>
 </mapper>
 
 

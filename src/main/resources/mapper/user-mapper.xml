@@ -66,7 +66,7 @@
 
     <!--회원 정보 삭제-->
     <delete id="deleteUser">
-        DELETE FARMSEYE_USER
+        DELETE FROM FARMSEYE_USER
         WHERE USER_ID = #{userId}
     </delete>
 
@@ -78,6 +78,7 @@
         , USER_TEL = #{userTel}
         , USER_EMAIL = #{userEmail}
         , USER_ADDR = #{userAddr}
+        , IS_USING = #{isUsing}
         WHERE USER_ID = #{userId}
     </update>
 
