@@ -92,6 +92,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     //생성한 토큰을 응답 헤더에 담아 클라이언트에 전달
     response.setHeader("Access-Control-Expose-Headers", "Authorization");
     response.setHeader("Authorization", "Bearer " + accessToken);
+
     response.setStatus(HttpStatus.OK.value()); //클라이언트에 200 응답
     
   }

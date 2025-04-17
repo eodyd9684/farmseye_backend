@@ -82,7 +82,7 @@
 
     <!--회원 정보 삭제-->
     <delete id="deleteUser">
-        DELETE FARMSEYE_USER
+        DELETE FROM FARMSEYE_USER
         WHERE USER_ID = #{userId}
     </delete>
 
