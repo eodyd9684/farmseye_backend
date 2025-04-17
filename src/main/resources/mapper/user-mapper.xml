@@ -44,6 +44,20 @@
         LEFT JOIN USER_IMG I ON U.USER_ID = I.USER_ID
     </select>
 
+    <!--회원 정보 수정-->
+    <update id="updateUser">
+        UPDATE FARMSEYE_USER
+        SET
+        <if test='!userPw.equals("")'>
+            USER_PW = #{userPw} ,
+        </if>
+         USER_TEL = #{userTel}
+        , USER_EMAIL = #{userEmail}
+        , USER_ADDR = #{userAddr}
+        , IS_USING = #{isUsing}
+        WHERE USER_ID = #{userId}
+    </update>
+
     <!--회원 가입-->
     <insert id="join">
         INSERT INTO FARMSEYE_USER
@@ -54,6 +68,7 @@
             , USER_TEL
             , USER_EMAIL
             , USER_ADDR
+            , USER_ROLE
         ) VALUES(
             #{userId}
             , #{userPw}
@@ -61,6 +76,7 @@
             , #{userTel}
             , #{userEmail}
             , #{userAddr}
+            , #{userRole}
         )
     </insert>
 
@@ -70,17 +86,15 @@
         WHERE USER_ID = #{userId}
     </delete>
 
-    <!--회원 정보 수정-->
-    <update id="updateUser">
+    <!--회원 탈퇴-->
+    <update id="deactivateUser">
         UPDATE FARMSEYE_USER
         SET
-        USER_PW = #{userPw}
-        , USER_TEL = #{userTel}
-        , USER_EMAIL = #{userEmail}
-        , USER_ADDR = #{userAddr}
-        , IS_USING = #{isUsing}
+            IS_USING = 'N'
         WHERE USER_ID = #{userId}
+        AND IS_USING = 'Y'
     </update>
+
 
     <!--회원 이미지 등록-->
     <insert id="insertImgs">
@@ -113,6 +127,7 @@
         , USER_PW
         , USER_ROLE
         , USER_NAME
+        , IS_USING
         FROM FARMSEYE_USER
         WHERE USER_ID = #{userId}
     </select>

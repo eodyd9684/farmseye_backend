@@ -4,6 +4,7 @@ import com.green.farmseye.user.dto.UserDTO;
 import com.green.farmseye.user.dto.UserImgDTO;
 import com.green.farmseye.user.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -59,10 +60,20 @@ public class UserServiceImpl implements UserService{
 
   //회원 정보 수정 시 중복 확인
   @Override
-  public List<UserDTO> isUsable(String userId) {
+  public UserDTO isUsable(String userId) {
     return userMapper.isUsable(userId);
   }
 
+  //회원 탈퇴 기능
+  @Override
+  public boolean deactivateUser(String userId, String tokenUserId) {
+    if (!userId.equals(tokenUserId)) {
+      throw new AccessDeniedException("본인만 탈퇴할 수 있습니다.");
+    }
+
+    int result = userMapper.deactivateUser(userId);
+    return result == 1;
+  }
 
 
 }
