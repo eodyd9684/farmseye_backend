@@ -130,6 +130,7 @@
         , IS_USING
         FROM FARMSEYE_USER
         WHERE USER_ID = #{userId}
+        AND IS_USING = 'Y'
     </select>
 
     <!--회원 정보 수정 시 중복 확인-->
