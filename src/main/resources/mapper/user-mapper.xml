@@ -54,7 +54,6 @@
          USER_TEL = #{userTel}
         , USER_EMAIL = #{userEmail}
         , USER_ADDR = #{userAddr}
-        , IS_USING = #{isUsing}
         WHERE USER_ID = #{userId}
     </update>
 
