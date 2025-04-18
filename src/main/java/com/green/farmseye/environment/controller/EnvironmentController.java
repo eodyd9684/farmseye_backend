@@ -2,7 +2,11 @@ package com.green.farmseye.environment.controller;
 
 import com.green.farmseye.environment.dto.EnvironmentDTO;
 import com.green.farmseye.environment.service.EnvironmentService;
+import com.green.farmseye.user.dto.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,12 +16,19 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/farms")
-@RequiredArgsConstructor
 public class EnvironmentController {
   private final EnvironmentService environmentService;
 
-  @GetMapping("/{userId}")
-  private List<EnvironmentDTO> selectEnv(@PathVariable("userId") String userId){
+  @Autowired
+  public EnvironmentController(EnvironmentService environmentService){
+    this.environmentService = environmentService;
+  }
+
+
+  @GetMapping("")
+  private List<EnvironmentDTO> selectEnv(@AuthenticationPrincipal CustomUserDetails customUserDetails){
+    String userId = customUserDetails.getUsername();
+    System.out.println("@@@@@@@@@@@@@@" + userId);
     return environmentService.selectEnv(userId);
   };
 
