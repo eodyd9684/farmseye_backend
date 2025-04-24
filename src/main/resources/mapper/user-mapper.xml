@@ -67,7 +67,6 @@
             , USER_TEL
             , USER_EMAIL
             , USER_ADDR
-            , USER_ROLE
         ) VALUES(
             #{userId}
             , #{userPw}
@@ -75,7 +74,6 @@
             , #{userTel}
             , #{userEmail}
             , #{userAddr}
-            , #{userRole}
         )
     </insert>
 
