@@ -25,6 +25,11 @@ public class JwtConfirmFilter extends OncePerRequestFilter {
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
     log.info("JwtConfirmFilter - doFilterInternal() 메서드가 실행되어, token 검증 시작!");
 
+    //클라이언트가 웹인지 앱인지 파악 , 현재 웹에는 설정하지 않았기 때문에 null이 전달되고
+    //앱은 'app'으로 전달됨
+    String clientType = request.getHeader("clientType");
+    clientType = clientType == null ? "web" : clientType;
+
     //요청 시 전달되는 Authorization 헤더를 찾음
     String authorization = request.getHeader("Authorization");
 
@@ -40,7 +45,7 @@ public class JwtConfirmFilter extends OncePerRequestFilter {
     String token = authorization.split(" ")[1];
 
     //토큰 만료 여부 확인, 만료시 다음 필터로 넘기지 않음
-    if (jwtUtil.isExpired(token)) {
+    if (clientType.equals("web") && jwtUtil.isExpired(token)) {
       log.info("만료된 토큰입니다.");
       filterChain.doFilter(request, response);
 
