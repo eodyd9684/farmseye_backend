@@ -31,26 +31,41 @@ public class UserController {
 
   //회원 등록 api
   @PostMapping("")
-  public void insertUser(UserDTO userDTO
-                        , @RequestParam (name = "mainImg", required = true) MultipartFile mainImg
-  ){
-    //첨부파일(이미지) 업로드
-    String mainAttachedFileName = uploadUtil.fileUpload(mainImg); //첨부된파일명은 fileUpload() 메서드에서 만들어짐
+  public ResponseEntity<?> insertUser(
+          @ModelAttribute UserDTO userDTO,
+          @RequestParam(name = "mainImg", required = false) MultipartFile mainImg
+  ) {
+    try {
+      log.info("회원가입 기능 실행");
 
-    //USER 테이블에 데이터 INSERT
-     userService.join(userDTO);
+      // 비밀번호 암호화
+      String encoded_pw = passwordEncoder.encode(userDTO.getUserPw());
+      userDTO.setUserPw(encoded_pw);
 
-    UserImgDTO userImg = new UserImgDTO();
-    userImg.setOriginFileName(mainImg.getOriginalFilename());
-    userImg.setAttachedFileName(mainAttachedFileName);
-    userImg.setUserId(userDTO.getUserId());
+      // 사용자 정보 DB 저장
+      userService.join(userDTO);
 
-    //imgList를 userDTO에 넣는 코드
-    userDTO.setImgList(userImg);
+      // 이미지 처리
+      if (mainImg != null && !mainImg.isEmpty()) {
+        String mainAttachedFileName = uploadUtil.fileUpload(mainImg);
 
-    //USER_IMG 테이블에 이미지 정보 INSERT
-    userService.insertImgs(userDTO.getImgList());
+        UserImgDTO userImg = new UserImgDTO();
+        userImg.setOriginFileName(mainImg.getOriginalFilename());
+        userImg.setAttachedFileName(mainAttachedFileName);
+        userImg.setUserId(userDTO.getUserId());
+
+        userDTO.setImgList(userImg);
+        userService.insertImgs(userDTO.getImgList());
+      }
+
+      return ResponseEntity.ok(userDTO);
+
+    } catch (Exception e) {
+      log.error("회원가입 중 오류 발생", e);
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원가입 실패");
+    }
   }
+
 
   //회원 조회 api
   @GetMapping("")
