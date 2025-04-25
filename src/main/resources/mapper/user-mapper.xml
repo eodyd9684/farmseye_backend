@@ -152,6 +152,33 @@
 
 
 
+
+
+    <!--  이미지 업로드 테스트  -->
+    <insert id="uploadImg">
+        INSERT INTO IMG_UPLOAD_TEST(
+            ORIGINAL_NAME,
+            STORED_PATH,
+            USER_ID
+        ) VALUES(
+            #{originalName},
+            #{storedPath},
+            "user"
+        )
+    </insert>
+
+    <!-- 이미지 다운로드 -->
+    <select id="findStoredPathByUserId" resultType="String">
+        SELECT STORED_PATH
+        FROM IMG_UPLOAD_TEST
+        WHERE USER_ID = #{userId}
+        ORDER BY IMG_CODE DESC
+        LIMIT 1
+    </select>
+
+
+
+
 </mapper>
 
 

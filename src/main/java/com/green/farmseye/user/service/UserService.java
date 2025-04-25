@@ -33,4 +33,9 @@ public interface UserService {
   //회원 탈퇴 기능
   public boolean deactivateUser(String userId, String tokenUserId);
 
+  //이미지 저장
+  public void uploadImg(String originalName, String storedPath);
+
+  //이미지 업로드
+  public String getUserImagePath(String userId);
 }

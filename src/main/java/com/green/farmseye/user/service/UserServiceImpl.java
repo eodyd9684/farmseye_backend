@@ -75,5 +75,15 @@ public class UserServiceImpl implements UserService{
     return result == 1;
   }
 
+  @Override
+  public void uploadImg(String originalName, String storedPath) {
+    userMapper.uploadImg(originalName, storedPath);
+  }
+
+  @Override
+  public String getUserImagePath(String userId) {
+    return userMapper.findStoredPathByUserId(userId);
+  }
+
 
 }

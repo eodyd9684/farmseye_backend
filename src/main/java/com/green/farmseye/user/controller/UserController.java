@@ -9,16 +9,28 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.User;
 import org.apache.catalina.security.SecurityUtil;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -26,45 +38,7 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
   private final UserService userService;
-  private final UploadUtil uploadUtil;
   private final PasswordEncoder passwordEncoder;
-
-  //회원 등록 api
-  @PostMapping("")
-  public ResponseEntity<?> insertUser(
-          @ModelAttribute UserDTO userDTO,
-          @RequestParam(name = "mainImg", required = false) MultipartFile mainImg
-  ) {
-    try {
-      log.info("회원가입 기능 실행");
-
-      // 비밀번호 암호화
-      String encoded_pw = passwordEncoder.encode(userDTO.getUserPw());
-      userDTO.setUserPw(encoded_pw);
-
-      // 사용자 정보 DB 저장
-      userService.join(userDTO);
-
-      // 이미지 처리
-      if (mainImg != null && !mainImg.isEmpty()) {
-        String mainAttachedFileName = uploadUtil.fileUpload(mainImg);
-
-        UserImgDTO userImg = new UserImgDTO();
-        userImg.setOriginFileName(mainImg.getOriginalFilename());
-        userImg.setAttachedFileName(mainAttachedFileName);
-        userImg.setUserId(userDTO.getUserId());
-
-        userDTO.setImgList(userImg);
-        userService.insertImgs(userDTO.getImgList());
-      }
-
-      return ResponseEntity.ok(userDTO);
-
-    } catch (Exception e) {
-      log.error("회원가입 중 오류 발생", e);
-      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원가입 실패");
-    }
-  }
 
 
   //회원 조회 api
@@ -171,6 +145,66 @@ public class UserController {
   }
 
 
+  /// 이미지 업로드///////////////////////////////////////////////
+  //회원 img test
+    @PostMapping("")
+    public ResponseEntity<?> insertUser(
+            @RequestParam("file") MultipartFile file
+    ) {
+      try {
+        // 1. 경로 설정 (application.properties에서 주입 필요)
+        String baseDir = "D:/01-STUDY/devel/code17/farmseye_backend/src/main/resources/static/upload";
+        Path uploadPath = Paths.get(baseDir).normalize();
+        if (!Files.exists(uploadPath)) {
+          Files.createDirectories(uploadPath);  // 디렉토리 생성 방식 변경
+        }
+
+        // 2. 고유 파일명 생성 (기존 코드 유지)
+        String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+        Path filePath = uploadPath.resolve(fileName);  // Path 객체 활용
+
+        // 3. 파일 저장 (기존 코드 유지)
+        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+        // 4. DB 저장 경로 (기존 코드 유지)
+        userService.uploadImg(
+                file.getOriginalFilename(),  // 원본 파일명
+                "/upload/" + fileName     // 웹 접근 경로
+        );
+
+        return ResponseEntity.ok("File uploaded: " + fileName);
+      } catch (IOException e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Upload failed");  // HttpStatus 상수 사용
+      }
+    }
+
+  /// 이미지 불러오기 테스트중 /////////////////////////////////////
+  @GetMapping("/{userId}/image")
+  public ResponseEntity<?> showUserImage(@PathVariable String userId) throws IOException {
+    // 1. DB에서 경로 조회
+    String storedPath = userService.getUserImagePath(userId);
+    Path path = Paths.get(storedPath);
+    String fileName = path.getFileName().toString();
+
+    // 2. 물리적 경로 조합
+    Path filePath = Paths.get("D:/01-STUDY/devel/code17/farmseye_backend/src/main/resources/static/upload").resolve(fileName);
+    Resource resource = new UrlResource(filePath.toUri());
+
+    // 3. 이미지 존재 여부 확인
+    if (!resource.exists()) {
+      return ResponseEntity.notFound().build();
+    }
+
+    // 4. MediaType 자동 추정
+    String contentType = Files.probeContentType(filePath);
+    if (contentType == null) {
+      contentType = "application/octet-stream";
+    }
+
+    return ResponseEntity.ok()
+            .contentType(MediaType.parseMediaType(contentType))
+            .body(resource);
+  }
 
 
 
