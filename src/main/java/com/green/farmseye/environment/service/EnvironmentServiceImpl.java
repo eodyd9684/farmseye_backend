@@ -16,4 +16,9 @@ public class EnvironmentServiceImpl implements EnvironmentService {
   public List<EnvironmentDTO> selectEnv(String userId) {
     return environmentMapper.selectEnv(userId);
   }
+
+  @Override
+  public EnvironmentDTO selectNowEnv(String userId) {
+    return environmentMapper.selectNowEnv(userId);
+  }
 }

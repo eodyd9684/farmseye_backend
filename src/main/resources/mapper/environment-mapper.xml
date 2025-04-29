@@ -37,6 +37,25 @@
         WHERE USER_ID = #{userId}
     </select>
 
+    <select id="selectNowEnv" resultMap="env">
+        SELECT
+            EYE_NUM
+            , TEMP
+            , HUMI
+            , NO2
+            , CO2
+            , NH3
+            , H2S
+            , TOLUENE
+            , ILLUMI
+            , TIMESTAMP
+            , USER_ID
+        FROM farmseye_env
+        WHERE USER_ID = 'user'
+        ORDER BY TIMESTAMP DESC
+        LIMIT 1;
+    </select>
+
 
 </mapper>
 
