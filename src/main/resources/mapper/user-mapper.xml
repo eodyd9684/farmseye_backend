@@ -111,6 +111,7 @@
     <select id="isUsable" resultMap="user">
         SELECT USER_ID
             , USER_PW
+            , USER_AGE
             , USER_TEL
             , USER_EMAIL
             , USER_ADDR
