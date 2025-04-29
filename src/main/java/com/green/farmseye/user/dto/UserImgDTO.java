@@ -9,7 +9,7 @@ import lombok.ToString;
 @ToString
 public class UserImgDTO {
   private int imgCode;
-  private String originFileName;
-  private String attachedFileName;
+  private String originalName;
+  private String storedPath;
   private String userId;
 }
