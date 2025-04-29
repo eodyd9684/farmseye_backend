@@ -22,7 +22,6 @@ public class StockController {
     String userId = "user";
     return stockService.selectStock(userId);
   }
-
   //개체 등록
   @PostMapping("/join")
   public void insertStock(@RequestBody StockDTO stockDTO){

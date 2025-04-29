@@ -1,16 +1,14 @@
 package com.green.farmseye.environment.controller;
 
 import com.green.farmseye.environment.dto.EnvironmentDTO;
+import com.green.farmseye.environment.dto.EnvironmentMinMaxDTO;
 import com.green.farmseye.environment.service.EnvironmentService;
 import com.green.farmseye.user.dto.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -31,5 +29,16 @@ public class EnvironmentController {
     System.out.println("@@@@@@@@@@@@@@" + userId);
     return environmentService.selectEnv(userId);
   };
+
+  @GetMapping("/{userId}")
+  public EnvironmentMinMaxDTO selectEnvMinMax(@PathVariable("userId") String userId){
+    return environmentService.selectEnvMinMax(userId);
+  }
+
+  @PutMapping("/{userId}")
+  public void updateMinMax(@RequestBody EnvironmentMinMaxDTO environmentMinMaxDTO, @PathVariable("userId") String userId){
+    environmentMinMaxDTO.setUserId(userId);
+    environmentService.updateMinMax(environmentMinMaxDTO);
+  }
 
 }
