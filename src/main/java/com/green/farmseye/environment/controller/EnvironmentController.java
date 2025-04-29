@@ -32,10 +32,4 @@ public class EnvironmentController {
     return environmentService.selectEnv(userId);
   };
 
-  @GetMapping("/now")
-  private EnvironmentDTO selectNowEnv(@AuthenticationPrincipal CustomUserDetails customUserDetails){
-    String userId = customUserDetails.getUsername();
-    return environmentService.selectNowEnv(userId);
-  };
-
 }

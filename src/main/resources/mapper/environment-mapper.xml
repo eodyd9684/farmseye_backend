@@ -19,6 +19,27 @@
         <result column="USER_ID"    property="userId"/>
     </resultMap>
 
+    <resultMap id="envMinMax" type="EnvironmentMinMaxDTO">
+        <id     column="NUM"    property="num"/>
+        <result column="MIN_TEM"       property="minTem"/>
+        <result column="MAX_TEM"       property="maxTem"/>
+        <result column="MIN_HUMI"       property="minHumi"/>
+        <result column="MAX_HUMI"       property="maxHumi"/>
+        <result column="MIN_ILLUMI"        property="minIllumi"/>
+        <result column="MAX_ILLUMI"        property="maxIllumi"/>
+        <result column="BOU_NO2"        property="bouNo2"/>
+        <result column="DAN_NO2"        property="danNo2"/>
+        <result column="BOU_CO2"        property="bouCo2"/>
+        <result column="DAN_CO2"        property="danCo2"/>
+        <result column="BOU_NH3"        property="bouNh3"/>
+        <result column="DAN_NH3"        property="danNh3"/>
+        <result column="BOU_H2S"    property="bouH2s"/>
+        <result column="DAN_H2S"    property="danH2s"/>
+        <result column="BOU_TOLUENE"     property="bouToluene"/>
+        <result column="DAN_TOLUENE"     property="danToluene"/>
+        <result column="USER_ID"    property="userId"/>
+    </resultMap>
+
     <!--내부 시설 조회-->
     <select id="selectEnv" resultMap="env">
         SELECT
@@ -55,6 +76,87 @@
         ORDER BY TIMESTAMP DESC
         LIMIT 1;
     </select>
+
+    <!--내부 시설 min max 조회-->
+    <select id="selectEnvMinMax" resultMap="envMinMax">
+        SELECT
+            NUM
+            , MIN_TEM
+            , MAX_TEM
+            , MIN_HUMI
+            , MAX_HUMI
+            , MIN_ILLUMI
+            , MAX_ILLUMI
+            , BOU_NO2
+            , DAN_NO2
+            , BOU_CO2
+            , DAN_CO2
+            , BOU_NH3
+            , DAN_NH3
+            , BOU_H2S
+            , DAN_H2S
+            , BOU_TOLUENE
+            , DAN_TOLUENE
+            , USER_ID
+        FROM FARMSEYE_ENV_MINMAX
+        WHERE USER_ID = #{userId}
+    </select>
+
+    <!--MinMax 수정-->
+    <update id="updateMinMax">
+        UPDATE FARMSEYE_ENV_MINMAX
+        <set>
+            <if test="minTem != null">
+                MIN_TEM = #{minTem},
+            </if>
+            <if test="maxTem != null">
+                MAX_TEM = #{maxTem},
+            </if>
+            <if test="minHumi != null">
+                MIN_HUMI = #{minHumi},
+            </if>
+            <if test="maxHumi != null">
+                MAX_HUMI = #{maxHumi},
+            </if>
+            <if test="minIllumi != null">
+                MIN_ILLUMI = #{minIllumi},
+            </if>
+            <if test="maxIllumi != null">
+                MAX_ILLUMI = #{maxIllumi},
+            </if>
+            <if test="bouNo2 != null">
+                BOU_NO2 = #{bouNo2},
+            </if>
+            <if test="danNo2 != null">
+                DAN_NO2 = #{danNo2},
+            </if>
+            <if test="bouCo2 != null">
+                BOU_CO2 = #{bouCo2},
+            </if>
+            <if test="danCo2 != null">
+                DAN_CO2 = #{danCo2},
+            </if>
+            <if test="bouNh3 != null">
+                BOU_NH3 = #{bouNh3},
+            </if>
+            <if test="danNh3 != null">
+                DAN_NH3 = #{danNh3},
+            </if>
+            <if test="bouH2s != null">
+                BOU_H2S = #{bouH2s},
+            </if>
+            <if test="danH2s != null">
+                DAN_H2S = #{danH2s},
+            </if>
+            <if test="bouToluene != null">
+                BOU_TOLUENE = #{bouToluene},
+            </if>
+            <if test="danToluene != null">
+                DAN_TOLUENE = #{danToluene},
+            </if>
+        </set>
+        WHERE USER_ID = #{userId}
+    </update>
 
 
 </mapper>
