@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.User;
 import org.apache.catalina.security.SecurityUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
@@ -39,6 +40,9 @@ import java.util.UUID;
 public class UserController {
   private final UserService userService;
   private final PasswordEncoder passwordEncoder;
+
+  @Value("${file.upload.dir}")
+  private String uploadDir;
 
 
   //회원 조회 api
@@ -85,6 +89,7 @@ public class UserController {
   public ResponseEntity<?> isUsable(@AuthenticationPrincipal CustomUserDetails customUserDetails){
     String userId = customUserDetails.getUsername();
     UserDTO userDTO = userService.isUsable(userId);
+
     return ResponseEntity
             .status(HttpStatus.OK)
             .body(userDTO);
@@ -146,15 +151,15 @@ public class UserController {
 
 
   /// 이미지 업로드///////////////////////////////////////////////
-  //회원 img test
-    @PostMapping("")
+  //회원 img upload
+    @PostMapping("/{userId}")
     public ResponseEntity<?> insertUser(
+            @PathVariable("userId") String userId,
             @RequestParam("file") MultipartFile file
     ) {
       try {
         // 1. 경로 설정 (application.properties에서 주입 필요)
-        String baseDir = "D:/01-STUDY/devel/code17/farmseye_backend/src/main/resources/static/upload";
-        Path uploadPath = Paths.get(baseDir).normalize();
+        Path uploadPath = Paths.get(uploadDir).normalize();
         if (!Files.exists(uploadPath)) {
           Files.createDirectories(uploadPath);  // 디렉토리 생성 방식 변경
         }
@@ -169,7 +174,8 @@ public class UserController {
         // 4. DB 저장 경로 (기존 코드 유지)
         userService.uploadImg(
                 file.getOriginalFilename(),  // 원본 파일명
-                "/upload/" + fileName     // 웹 접근 경로
+                "/upload/" + fileName,     // 웹 접근 경로
+                userId
         );
 
         return ResponseEntity.ok("File uploaded: " + fileName);
@@ -178,22 +184,20 @@ public class UserController {
       }
     }
 
-  /// 이미지 불러오기 테스트중 /////////////////////////////////////
+  /// image uri에 넣을 이미지 경로 요청 /////////////////////////////////////
   @GetMapping("/{userId}/image")
-  public ResponseEntity<?> showUserImage(@PathVariable String userId) throws IOException {
+  public ResponseEntity<?> showUserImage(@PathVariable("userId") String userId) throws IOException {
     // 1. DB에서 경로 조회
-    String storedPath = userService.getUserImagePath(userId);
-    Path path = Paths.get(storedPath);
-    String fileName = path.getFileName().toString();
+    String storedPath = userService.getUserImagePath(userId); //userid가 있는 경로
+    Path path = Paths.get(storedPath); //경로 지정
+    String fileName = path.getFileName().toString(); //경로 지정한 파일 원본 이름
 
     // 2. 물리적 경로 조합
-    Path filePath = Paths.get("D:/01-STUDY/devel/code17/farmseye_backend/src/main/resources/static/upload").resolve(fileName);
-    Resource resource = new UrlResource(filePath.toUri());
-
-    // 3. 이미지 존재 여부 확인
-    if (!resource.exists()) {
+    Path filePath = Paths.get(uploadDir).resolve(fileName);
+    if (!Files.exists(filePath)) {
       return ResponseEntity.notFound().build();
     }
+    Resource resource = new UrlResource(filePath.toUri());
 
     // 4. MediaType 자동 추정
     String contentType = Files.probeContentType(filePath);
@@ -206,7 +210,28 @@ public class UserController {
             .body(resource);
   }
 
+  ///  이미지 테이블 조회
+  @GetMapping("/getImage")
+  public ResponseEntity<?> getUserImg(@AuthenticationPrincipal UserDetails userDetails){
+    String userId = userDetails.getUsername();
+    UserImgDTO userImgDTO = userService.getUserImg(userId);
+    return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(userImgDTO);
+  };
 
-
+  // 이미지 삭제
+  @DeleteMapping("/{userId}/image")
+  public ResponseEntity<?> deleteUserImage(@PathVariable("userId") String userId) throws IOException {
+    String storedPath = userService.getUserImagePath(userId);
+    if (storedPath != null) {
+      Path filePath = Paths.get(storedPath);
+      if (Files.exists(filePath)) {
+        Files.delete(filePath);
+      }
+    }
+    userService.deleteUserImagePath(userId); // DB에서 경로 삭제
+    return ResponseEntity.ok().body("삭제 완료");
+  }
 
 }

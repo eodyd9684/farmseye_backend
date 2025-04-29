@@ -40,9 +40,17 @@ public interface UserMapper {
   //이미지 저장
   public void uploadImg(
           @Param("originalName") String originalName,
-          @Param("storedPath") String storedPath
+          @Param("storedPath") String storedPath,
+          @Param("userId") String userId
   );
 
-  //이미지 받아오기
-  public String findStoredPathByUserId(String userId);
+
+  //이미지 경로 받아오기
+  public String getUserImagePath(String userId);
+
+  //이미지 테이블에서 이미지 정보 받아오기
+  public UserImgDTO getUserImg(String userId);
+
+  //이미지 삭제
+  public int deleteUserImagePath(String userId);
 }

@@ -76,13 +76,23 @@ public class UserServiceImpl implements UserService{
   }
 
   @Override
-  public void uploadImg(String originalName, String storedPath) {
-    userMapper.uploadImg(originalName, storedPath);
+  public void uploadImg(String originalName, String storedPath, String userId) {
+    userMapper.uploadImg(originalName, storedPath, userId);
   }
 
   @Override
   public String getUserImagePath(String userId) {
-    return userMapper.findStoredPathByUserId(userId);
+    return userMapper.getUserImagePath(userId);
+  }
+
+  @Override
+  public UserImgDTO getUserImg(String userId) {
+    return userMapper.getUserImg(userId);
+  }
+
+  @Override
+  public int deleteUserImagePath(String userId) {
+    return userMapper.deleteUserImagePath(userId);
   }
 
 

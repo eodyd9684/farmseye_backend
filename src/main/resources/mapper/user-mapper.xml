@@ -21,8 +21,8 @@
 
     <resultMap id="userImg" type="UserImgDTO">
         <id     column="IMG_CODE"           property="imgCode"/>
-        <result column="ORIGIN_FILE_NAME"   property="originFileName"/>
-        <result column="ATTACHED_FILE_NAME" property="attachedFileName"/>
+        <result column="ORIGINAL_NAME"   property="originalName"/>
+        <result column="STORED_PATH" property="storedPath"/>
         <result column="USER_ID"            property="userId"/>
     </resultMap>
 
@@ -51,7 +51,8 @@
         <if test='!userPw.equals("")'>
             USER_PW = #{userPw} ,
         </if>
-         USER_TEL = #{userTel}
+        USER_AGE = #{userAge}
+        , USER_TEL = #{userTel}
         , USER_EMAIL = #{userEmail}
         , USER_ADDR = #{userAddr}
         WHERE USER_ID = #{userId}
@@ -67,6 +68,7 @@
             , USER_TEL
             , USER_EMAIL
             , USER_ADDR
+            , USER_AGE
         ) VALUES(
             #{userId}
             , #{userPw}
@@ -74,6 +76,7 @@
             , #{userTel}
             , #{userEmail}
             , #{userAddr}
+            , #{userAge}
         )
     </insert>
 
@@ -90,32 +93,6 @@
             IS_USING = 'N'
         WHERE USER_ID = #{userId}
         AND IS_USING = 'Y'
-    </update>
-
-
-    <!--회원 이미지 등록-->
-    <insert id="insertImgs">
-        INSERT INTO USER_IMG (
-        ORIGIN_FILE_NAME
-        , ATTACHED_FILE_NAME
-        , USER_ID
-        ) VALUES (
-        <foreach collection="imgList" item="img" separator=",">
-            #{imgCode}
-            , #{originFileName}
-            , #{attachedFileName}
-            , #{userId}
-        </foreach>
-        )
-    </insert>
-
-    <!--회원 이미지 수정-->
-    <update id="updateImgs">
-        UPDATE USER_IMG
-        SET
-        ORIGIN_FILE_NAME = #{originFileName}
-        , ATTACHED_FILE_NAME = #{attachedFileName}
-        WHERE USER_ID = #{userId}
     </update>
 
     <!--로그인하려는 회원 정보 조회-->
@@ -163,12 +140,12 @@
         ) VALUES(
             #{originalName},
             #{storedPath},
-            "user"
+            #{userId}
         )
     </insert>
 
     <!-- 이미지 다운로드 -->
-    <select id="findStoredPathByUserId" resultType="String">
+    <select id="getUserImagePath" resultType="String">
         SELECT STORED_PATH
         FROM IMG_UPLOAD_TEST
         WHERE USER_ID = #{userId}
@@ -176,7 +153,22 @@
         LIMIT 1
     </select>
 
+    <!-- 이미지 조회 -->
+    <select id="getUserImg" resultMap="userImg">
+        SELECT
+            IMG_CODE
+            , ORIGINAL_NAME
+            , STORED_PATH
+            , USER_ID
+        FROM IMG_UPLOAD_TEST
+        WHERE USER_ID = #{userId}
+    </select>
 
+    <!-- 회원 이미지 테이블 삭제 -->
+    <delete id="deleteUserImagePath">
+        DELETE FROM IMG_UPLOAD_TEST
+        WHERE USER_ID = #{userId}
+    </delete>
 
 
 </mapper>
