@@ -30,13 +30,21 @@ public class EnvironmentController {
     return environmentService.selectEnv(userId);
   };
 
-  @GetMapping("/{userId}")
-  public EnvironmentMinMaxDTO selectEnvMinMax(@PathVariable("userId") String userId){
+  @GetMapping("/now")
+  private EnvironmentDTO selectNowEnv(@AuthenticationPrincipal CustomUserDetails customUserDetails){
+    String userId = customUserDetails.getUsername();
+    return environmentService.selectNowEnv(userId);
+  };
+
+  @GetMapping("/minmax")
+  public EnvironmentMinMaxDTO selectEnvMinMax(@AuthenticationPrincipal CustomUserDetails customUserDetails){
+    String userId = customUserDetails.getUsername();
     return environmentService.selectEnvMinMax(userId);
   }
 
-  @PutMapping("/{userId}")
-  public void updateMinMax(@RequestBody EnvironmentMinMaxDTO environmentMinMaxDTO, @PathVariable("userId") String userId){
+  @PutMapping("/minmax")
+  public void updateMinMax(@RequestBody EnvironmentMinMaxDTO environmentMinMaxDTO, @AuthenticationPrincipal CustomUserDetails customUserDetails){
+    String userId = customUserDetails.getUsername();
     environmentMinMaxDTO.setUserId(userId);
     environmentService.updateMinMax(environmentMinMaxDTO);
   }

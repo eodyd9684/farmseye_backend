@@ -19,6 +19,11 @@ public class EnvironmentServiceImpl implements EnvironmentService {
   }
 
   @Override
+  public EnvironmentDTO selectNowEnv(String userId) {
+    return environmentMapper.selectNowEnv(userId);
+  }
+
+  @Override
   public EnvironmentMinMaxDTO selectEnvMinMax(String userId) {
     return environmentMapper.selectEnvMinMax(userId);
   }
