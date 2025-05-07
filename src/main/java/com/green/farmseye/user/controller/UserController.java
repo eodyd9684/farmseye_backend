@@ -9,16 +9,29 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.User;
 import org.apache.catalina.security.SecurityUtil;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -26,31 +39,11 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
   private final UserService userService;
-  private final UploadUtil uploadUtil;
   private final PasswordEncoder passwordEncoder;
 
-  //회원 등록 api
-  @PostMapping("")
-  public void insertUser(UserDTO userDTO
-                        , @RequestParam (name = "mainImg", required = true) MultipartFile mainImg
-  ){
-    //첨부파일(이미지) 업로드
-    String mainAttachedFileName = uploadUtil.fileUpload(mainImg); //첨부된파일명은 fileUpload() 메서드에서 만들어짐
+  @Value("${file.upload.dir}")
+  private String uploadDir;
 
-    //USER 테이블에 데이터 INSERT
-     userService.join(userDTO);
-
-    UserImgDTO userImg = new UserImgDTO();
-    userImg.setOriginFileName(mainImg.getOriginalFilename());
-    userImg.setAttachedFileName(mainAttachedFileName);
-    userImg.setUserId(userDTO.getUserId());
-
-    //imgList를 userDTO에 넣는 코드
-    userDTO.setImgList(userImg);
-
-    //USER_IMG 테이블에 이미지 정보 INSERT
-    userService.insertImgs(userDTO.getImgList());
-  }
 
   //회원 조회 api
   @GetMapping("")
@@ -96,6 +89,7 @@ public class UserController {
   public ResponseEntity<?> isUsable(@AuthenticationPrincipal CustomUserDetails customUserDetails){
     String userId = customUserDetails.getUsername();
     UserDTO userDTO = userService.isUsable(userId);
+
     return ResponseEntity
             .status(HttpStatus.OK)
             .body(userDTO);
@@ -156,8 +150,88 @@ public class UserController {
   }
 
 
+  /// 이미지 업로드///////////////////////////////////////////////
+  //회원 img upload
+    @PostMapping("/{userId}")
+    public ResponseEntity<?> insertUser(
+            @PathVariable("userId") String userId,
+            @RequestParam("file") MultipartFile file
+    ) {
+      try {
+        // 1. 경로 설정 (application.properties에서 주입 필요)
+        Path uploadPath = Paths.get(uploadDir).normalize();
+        if (!Files.exists(uploadPath)) {
+          Files.createDirectories(uploadPath);  // 디렉토리 생성 방식 변경
+        }
 
+        // 2. 고유 파일명 생성 (기존 코드 유지)
+        String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+        Path filePath = uploadPath.resolve(fileName);  // Path 객체 활용
 
+        // 3. 파일 저장 (기존 코드 유지)
+        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
+        // 4. DB 저장 경로 (기존 코드 유지)
+        userService.uploadImg(
+                file.getOriginalFilename(),  // 원본 파일명
+                "/upload/" + fileName,     // 웹 접근 경로
+                userId
+        );
+
+        return ResponseEntity.ok("File uploaded: " + fileName);
+      } catch (IOException e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Upload failed");  // HttpStatus 상수 사용
+      }
+    }
+
+  /// image uri에 넣을 이미지 경로 요청 /////////////////////////////////////
+  @GetMapping("/{userId}/image")
+  public ResponseEntity<?> showUserImage(@PathVariable("userId") String userId) throws IOException {
+    // 1. DB에서 경로 조회
+    String storedPath = userService.getUserImagePath(userId); //userid가 있는 경로
+    Path path = Paths.get(storedPath); //경로 지정
+    String fileName = path.getFileName().toString(); //경로 지정한 파일 원본 이름
+
+    // 2. 물리적 경로 조합
+    Path filePath = Paths.get(uploadDir).resolve(fileName);
+    if (!Files.exists(filePath)) {
+      return ResponseEntity.notFound().build();
+    }
+    Resource resource = new UrlResource(filePath.toUri());
+
+    // 4. MediaType 자동 추정
+    String contentType = Files.probeContentType(filePath);
+    if (contentType == null) {
+      contentType = "application/octet-stream";
+    }
+
+    return ResponseEntity.ok()
+            .contentType(MediaType.parseMediaType(contentType))
+            .body(resource);
+  }
+
+  ///  이미지 테이블 조회
+  @GetMapping("/getImage")
+  public ResponseEntity<?> getUserImg(@AuthenticationPrincipal UserDetails userDetails){
+    String userId = userDetails.getUsername();
+    UserImgDTO userImgDTO = userService.getUserImg(userId);
+    return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(userImgDTO);
+  };
+
+  // 이미지 삭제
+  @DeleteMapping("/{userId}/image")
+  public ResponseEntity<?> deleteUserImage(@PathVariable("userId") String userId) throws IOException {
+    String storedPath = userService.getUserImagePath(userId);
+    if (storedPath != null) {
+      Path filePath = Paths.get(storedPath);
+      if (Files.exists(filePath)) {
+        Files.delete(filePath);
+      }
+    }
+    userService.deleteUserImagePath(userId); // DB에서 경로 삭제
+    return ResponseEntity.ok().body("삭제 완료");
+  }
 
 }

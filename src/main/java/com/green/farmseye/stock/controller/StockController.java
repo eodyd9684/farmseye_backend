@@ -18,10 +18,10 @@ public class StockController {
   //개체 조회
   @GetMapping("")
   public List<StockDTO> selectStock(@AuthenticationPrincipal CustomUserDetails customUserDetails){
-    String userId = customUserDetails.getUsername();
+//    String userId = customUserDetails.getUsername();
+    String userId = "user";
     return stockService.selectStock(userId);
   }
-
   //개체 등록
   @PostMapping("/join")
   public void insertStock(@RequestBody StockDTO stockDTO){

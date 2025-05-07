@@ -3,6 +3,7 @@ package com.green.farmseye.user.mapper;
 import com.green.farmseye.user.dto.UserDTO;
 import com.green.farmseye.user.dto.UserImgDTO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -36,4 +37,20 @@ public interface UserMapper {
   public int deactivateUser(String userId);
 
 
+  //이미지 저장
+  public void uploadImg(
+          @Param("originalName") String originalName,
+          @Param("storedPath") String storedPath,
+          @Param("userId") String userId
+  );
+
+
+  //이미지 경로 받아오기
+  public String getUserImagePath(String userId);
+
+  //이미지 테이블에서 이미지 정보 받아오기
+  public UserImgDTO getUserImg(String userId);
+
+  //이미지 삭제
+  public int deleteUserImagePath(String userId);
 }
