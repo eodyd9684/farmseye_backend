@@ -22,6 +22,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.List;
+
 @Configuration //객체생성 + 해당 클래스에 설정 내용이 들어있음을 알려줌
 @EnableWebSecurity //해당 클래스가 security 설정을 컨트롤 할 수 있도록 세팅하는 어노테이션
 @EnableMethodSecurity(prePostEnabled = true, securedEnabled = true) //스프링 시큐리티에서 메서드 단위로 접근 제어(인가)를 적용할 수 있도록 활성화하는 어노테이션
